@@ -52,10 +52,23 @@ Array.prototype.two_sum = function(){
 
 // [2,-2,1,-1,3,5,4,5,-4].two_sum();
 
+Array.prototype.my_transpose = function(){
+  const transposed_arr = [];
 
+  // create array of empty arrays 
+  for(var i = 0; i < this.length; i++) {
+    transposed_arr.push([]);
+  }
 
+  for(var i = 0; i < this.length; i++){
+    for (var j = 0; j < this.length; j++){
+      transposed_arr[j].push(this[i][j]);
+    }
+  }
+  return transposed_arr;
 }
-// My Transpose
+
+console.log([[0, 1, 2], [3, 4, 5], [6, 7, 8]].my_transpose());// My Transpose
 //
 // To represent a matrix, or two-dimensional grid of numbers, we can write an array containing arrays which represent rows:
 //
