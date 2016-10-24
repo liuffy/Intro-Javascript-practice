@@ -35,13 +35,13 @@ Array.prototype.myEach = function(func){
 
 Array.prototype.myMap = function(func){
   const newArray = [];
-  this.myEach(el => newArray.push(func(el)));
+  this.myEach(el => newArray.push(func(el)) ); // fat arrow syntax
   return newArray;
 }
 
-NUMS.myMap((num) => {
-  console.log(num*2);
-});
+// NUMS.myMap((num) => {
+//   console.log(num*2);
+// });
 
 // myInject
 // Your inject should take a function.
@@ -49,3 +49,13 @@ NUMS.myMap((num) => {
 // It must also use your myEach function.
 //
 // Array.prototype.my_inject = function()
+
+
+Array.prototype.myInject = function(func){
+  let total = this[0]; // start the accumulator variable with the first value
+
+  this.slice(1).myEach(el => total = func(total, el));
+  return total;
+}
+
+console.log(NUMS.myInject((total, num) => total + num));
