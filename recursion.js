@@ -147,7 +147,7 @@ function recurBinary(array, target){
   if (array.length === 0){ // base case - if target is not found
     return -1;
   }
-  const midPoint = Math.floor(array.length / 2); // needed otherwise result will be decimal 
+  const midPoint = Math.floor(array.length / 2); // needed otherwise result will be decimal
 ;
   const candidate = array[midPoint];
 
@@ -164,7 +164,72 @@ function recurBinary(array, target){
   }
 }
 
-console.log(recurBinary([2,3,4,5,6,7], 6));
-console.log(recurBinary([2,3,4,5,6,7], 7));
-console.log(recurBinary([2,3,4,5,6,7], 8));
-console.log(recurBinary([0,1,4,5,6,7], 4));
+// console.log(recurBinary([2,3,4,5,6,7], 6)); // 4
+// console.log(recurBinary([2,3,4,5,6,7], 7)); //5
+// console.log(recurBinary([2,3,4,5,6,7], 8)); //-1
+// console.log(recurBinary([0,1,4,5,6,7], 4)); //2
+//
+// Make change.
+//
+// Make sure your solution works for make_change(14, [10, 7,
+// 1]). The correct answer is [7, 7], not [10, 1, 1, 1, 1].
+
+// Here's a game plan for solving the problem:
+// First, do the traditional American money thing: take as many of the biggest coin
+// as you can. Then do a recursion on the remaining amount, leaving out the bigges
+// t kind of coin.
+
+// Next, instead of taking as many of the biggest you can, instead use only one of
+// the biggest you can. When you make your recursive call for the remaining amount,
+// leave out the biggest kind of coin only if you couldn't use any of them. Note t
+// hat this doesn't fix anything; it just makes you give out coins of a given type
+// one-by-one.
+
+// Lastly, change your program so that it doesn't lock itself into using the bigges
+// t possible coin. In each call to make_change, iterate through the possible coins
+// ; first take one of the biggest, and then make a recursive call on the remaining
+// amount. Record this way of making change. But don't stop yet; next, take one of
+// the second-biggest coin, and try to make change for the remainder. If this uses
+// fewer coins than the previous solution, replace your "current best" solution. D
+// on't stop until you iterate through all the coins.
+
+
+// The trick is that each level of recursion should be trying out all the coins. Li
+// ke in the make_change(14, [10, 7, 1]) case, you can't assume that you'll use the
+// 10 cent piece.
+
+function makeChange(target, coins){
+  if (target === 0){ // base case 1
+    return [];
+  }
+  if (coins.every(coin => target < coins)){ // base case 2- the target is smaller than all of the denominations available
+    return null;
+  }
+
+  //////////////////////////////////////////////////
+
+  coins.sort(function(a,b){ // anonymous function in order to sort by numeric order
+    return b-a // coins are now sorted in reverse numeric order
+  })
+
+  let bestChange = null;
+  coins.forEach((coin, index) => {
+    if (coin > target){
+      return;
+    }
+    let remainder = target - coin;
+    let remainChange = makeChange(remainder, coins.slice(index));
+    if (!remainChange){ // if remainChange holds a value, the if check would not pass.
+      return; //However, if remainChange is evaluated to be falsy, we stop execution with return statement
+    }
+
+    let change = [coin].concat(remainChange);
+    if ( !bestChange || change.length < bestChange.length){
+      bestChange = change;
+    }
+  });
+  return bestChange;
+}
+console.log(makeChange(14, [10, 7, 1])); // [7,7]
+console.log(makeChange(14, [2, 4, 6])); // [6,6,2]
+console.log(makeChange(49, [2, 4, 6])); // null (odd number)
