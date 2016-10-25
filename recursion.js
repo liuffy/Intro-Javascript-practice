@@ -213,12 +213,13 @@ function makeChange(target, coins){
   })
 
   let bestChange = null;
-  coins.forEach((coin, index) => {
+  coins.forEach((coin, index) => { // recursion for each coin, starting from the largest
     if (coin > target){
       return;
     }
     let remainder = target - coin;
-    let remainChange = makeChange(remainder, coins.slice(index));
+    let remainChange = makeChange(remainder, coins.slice(index)); // recursive call on remainder of change
+
     if (!remainChange){ // if remainChange holds a value, the if check would not pass.
       return; //However, if remainChange is evaluated to be falsy, we stop execution with return statement
     }
@@ -230,6 +231,40 @@ function makeChange(target, coins){
   });
   return bestChange;
 }
-console.log(makeChange(14, [10, 7, 1])); // [7,7]
-console.log(makeChange(14, [2, 4, 6])); // [6,6,2]
-console.log(makeChange(49, [2, 4, 6])); // null (odd number)
+// console.log(makeChange(14, [10, 7, 1])); // [7,7]
+// console.log(makeChange(14, [2, 4, 6])); // [6,6,2]
+// console.log(makeChange(49, [2, 4, 6])); // null (odd number)
+
+
+// Wrapping up: merge_sort and subsets
+// Implement a method, merge_sort that sorts an Array.
+// The base cases are for arrays of length zero or one. Do not use a length-two array as a base case. T
+// his is unnecessary.
+// You'll want to write a merge helper method to merge the sorted halves.
+
+
+function mergeSort(array){
+  if (array.length < 2){ // BASE CASE: length zero or one
+    return array; // this will give us single element subarrays
+  }
+
+  else {
+    let middle = Math.floor(array.length / 2); // Math.floor returns the largest integer less than or equal to a number 
+    const left = mergeSort(array.slice(0, middle)); // this subsequently calls the method on the subleft and subright until the base case is hit
+    const right = mergeSort(array.slice(middle));
+
+    return merge(left, right);
+  }
+}
+
+function merge(left, right){ // for merging the sorted halves
+  const mergedArray = [];
+
+  while (left.length > 0 && right.length > 0 ){
+    let nextEl = (left[0] < right[0]) ? left.shift() : right.shift()
+    mergedArray.push(nextEl)
+  }
+  return mergedArray.concat(left, right);
+}
+
+console.log(`mergeSort([4, 5, 2, 3, 1]) = ${mergeSort([4, 5, 2, 3, 1])}`);
